@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我们的备婚计划</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            text-align: center;
+            color: #e83e8c;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            background-color: #fff;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .stage-header {
+            background-color: #e83e8c;
+            color: white;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .completed {
+            text-decoration: line-through;
+            color: #999;
+        }
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>我们的备婚计划</h1>
+    <p align="center">婚礼日期：2025年9月4日 | 午宴时间：12:00</p>
+
+    <table id="wedding-plan">
+        <thead>
+            <tr>
+                <th>完成</th>
+                <th>计划时间</th>
+                <th>项目</th>
+                <th>子任务</th>
+                <th>执行人</th>
+                <th>备注</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+        const planData = `
+时间段,计划完成时间,项目内容,执行人,具体事项,完成情况,备注
+"第一阶段：前期准备","2025-07-14 - 2025-08-15",,,,,
+,"2025-07-20","确定日期","双方","确定婚期 (2025-09-04)",,"已确定"
+,"2025-07-20","确定日期","双方","确定回门日期 (2025-09-07)",,"已确定"
+,"2025-07-20","确定日期","双方","领证日期",,
+,"2025-07-25","订婚","双方","订婚地点","","榆社"
+,"2025-07-25","订婚","双方","订婚人员",,
+,"2025-07-25","订婚","双方","彩礼三金嫁妆","","预算五万, 戒指项链手镯/手链"
+,"2025-08-01","领证","双方","准备领证材料",,
+,"2025-08-01","领证","双方","预约领证拍照",,
+,"2025-08-05","婚纱照","新娘","确定风格预算",,
+,"2025-08-05","婚纱照","新娘","选婚纱照机构",,
+,"2025-08-15","婚纱照","新娘","拍摄婚纱照",,
+,"2025-08-20","婚纱照","新娘","选片",,
+,"2025-08-10","婚礼邀请","双方","制作朋友圈邀请视频",,
+,"2025-08-10","婚礼邀请","双方","准备私信邀请文案",,
+"第二阶段：婚礼冲刺","2025-08-16 - 2025-09-03",,,,,
+,"2025-08-20","婚礼流程","策划/双方","确定婚礼当天流程","","开席时间 12:00"
+,"2025-08-22","婚纱及礼服","新娘","选定新娘婚纱和礼服",,
+,"2025-08-22","婚纱及礼服","新郎","选定新郎礼服",,
+,"2025-08-25","宾客事宜","女方","确定女方宾客人数",,
+,"2025-08-25","宾客事宜","女方","安排女方宾客住宿",,
+,"2025-08-25","宾客事宜","女方","安排女方宾客交通",,
+,"2025-08-28","婚礼布置","双方","确定婚礼布置风格",,
+,"2025-08-28","婚礼布置","双方","确定是否自己搭建",,
+,"2025-08-28","婚礼布置","双方","确定男方室外布置",,
+,"2025-08-28","婚礼布置","双方","确定男方室内布置",,
+,"2025-08-28","婚礼布置","双方","确定女方布置",,
+,"2025-09-01","婚礼车辆","双方","确定是否需要婚车",,
+,"2025-09-01","婚礼人员","新娘","确定跟妆",,
+,"2025-09-01","婚礼人员","双方","确定摄影",,
+,"2025-09-01","婚礼人员","双方","确定摄像",,
+"第三阶段：婚礼当天","2025-09-04",,,,,
+,"-","婚礼当天","全体","享受婚礼！",,
+`;
+
+        function populateTable() {
+            const tableBody = document.getElementById('wedding-plan').getElementsByTagName('tbody')[0];
+            const rows = planData.trim().split('\n').slice(1); // Skip header row
+
+            rows.forEach((rowStr, index) => {
+                const columns = rowStr.split(',').map(s => s.replace(/"/g, ''));
+                const [stage, date, project, person, task, status, notes] = columns;
+
+                const row = tableBody.insertCell();
+                
+                if (stage && stage.includes('阶段')) {
+                    row.className = 'stage-header';
+                    const cell = row.insertCell();
+                    cell.colSpan = "6";
+                    cell.innerHTML = `${stage} (${date})`;
+                    return;
+                }
+
+                row.id = `task-${index}`;
+
+                const cell1 = row.insertCell(0);
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = status === '已确定' || localStorage.getItem(row.id) === 'true';
+                checkbox.onchange = () => toggleTaskCompletion(row.id);
+                cell1.appendChild(checkbox);
+
+                row.insertCell(1).textContent = date;
+                row.insertCell(2).textContent = project;
+                row.insertCell(3).textContent = task;
+                row.insertCell(4).textContent = person;
+                row.insertCell(5).textContent = notes;
+
+                if (checkbox.checked) {
+                    row.classList.add('completed');
+                }
+            });
+        }
+
+        function toggleTaskCompletion(rowId) {
+            const row = document.getElementById(rowId);
+            const checkbox = row.querySelector('input[type="checkbox"]');
+            if (checkbox.checked) {
+                row.classList.add('completed');
+                localStorage.setItem(rowId, 'true');
+            } else {
+                row.classList.remove('completed');
+                localStorage.setItem(rowId, 'false');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', populateTable);
+    </script>
+</body>
+</html>
